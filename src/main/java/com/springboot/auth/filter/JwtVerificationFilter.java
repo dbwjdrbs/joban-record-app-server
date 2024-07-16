@@ -20,7 +20,6 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     private final JwtTokenizer jwtTokenizer;
     private final JwtAuthorityUtils authorityUtils;
 
-    // (2)
     public JwtVerificationFilter(JwtTokenizer jwtTokenizer,
                                  JwtAuthorityUtils authorityUtils) {
         this.jwtTokenizer = jwtTokenizer;
@@ -29,31 +28,31 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        Map<String, Object> claims = verifyJws(request); // (3)
-        setAuthenticationToContext(claims);      // (4)
+        Map<String, Object> claims = verifyJws(request);
+        setAuthenticationToContext(claims);
 
-        filterChain.doFilter(request, response); // (5)
+        filterChain.doFilter(request, response);
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String authorization = request.getHeader("Authorization");  // (6-1)
+        String authorization = request.getHeader("Authorization");
 
-        return authorization == null || !authorization.startsWith("Bearer");  // (6-2)
+        return authorization == null || !authorization.startsWith("Bearer");
     }
 
     private Map<String, Object> verifyJws(HttpServletRequest request) {
-        String jws = request.getHeader("Authorization").replace("Bearer ", ""); // (3-1)
-        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey()); // (3-2)
-        Map<String, Object> claims = jwtTokenizer.getClaims(jws, base64EncodedSecretKey).getBody();   // (3-3)
+        String jws = request.getHeader("Authorization").replace("Bearer ", "");
+        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
+        Map<String, Object> claims = jwtTokenizer.getClaims(jws, base64EncodedSecretKey).getBody();
 
         return claims;
     }
 
     private void setAuthenticationToContext(Map<String, Object> claims) {
         String username = (String) claims.get("username");   // (4-1)
-        List<GrantedAuthority> authorities = authorityUtils.createAuthorities((List)claims.get("roles"));  // (4-2)
-        Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);  // (4-3)
-        SecurityContextHolder.getContext().setAuthentication(authentication); // (4-4)
+        List<GrantedAuthority> authorities = authorityUtils.createAuthorities((List)claims.get("roles"));
+        Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
