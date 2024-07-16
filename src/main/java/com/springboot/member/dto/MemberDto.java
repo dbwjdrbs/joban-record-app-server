@@ -13,12 +13,16 @@ public class MemberDto {
     @Getter
     @AllArgsConstructor // TODO 테스트를 위해 추가됨
     public static class Post {
+        @NotBlank(message = "이름은 공백이 아니어야 합니다.")
+        private String name;
+
         @NotBlank
         @Email
         private String email;
 
-        @NotBlank(message = "이름은 공백이 아니어야 합니다.")
-        private String name;
+        @NotBlank(message = "패스워드는 공백이 아니어야 합니다.")
+        private String password;
+
     }
 
     @Getter
