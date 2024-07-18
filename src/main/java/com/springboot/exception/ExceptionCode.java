@@ -11,7 +11,9 @@ public enum ExceptionCode {
     CANNOT_CHANGE_ORDER(403, "Order can not change"),
     NOT_IMPLEMENTATION(501, "Not Implementation"),
     INVALID_MEMBER_STATUS(400, "Invalid member status"),
-    GAMEDATA_EXISTS(409, "GAMEDATA exists");
+    GAMEDATA_EXISTS(409, "GameData exists"),
+    UNABLE_TO_SEND_EMAIL(500, "Unable to send email due to server"),
+    NO_SUCH_ALGORITHM(500, "no such algorithm (authCode)");
 
 
     @Getter

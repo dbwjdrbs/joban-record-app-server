@@ -15,6 +15,9 @@ spring:
   sql:
     init:
       data-locations: classpath*:db/h2/data.sql
+  redis:
+    host: localhost
+    port: 6379
 logging:
   level:
     org:
@@ -26,6 +29,21 @@ server:
     encoding:
       force-response: true
 mail:
+  host: smtp.gmail.com
+  port: 587
+  username: jobanrecordapp@gmail.com
+  password: ${MAIL_PASSWORD}
+  properties:
+    mail:
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+          required: true
+        connectiontimeout: 5000
+        timeout: 5000
+        writetimeout: 5000
+  auth-code-expiration-millis: 180000  # 30 * 60 * 1000 == 30분
   address:
     admin: admin@gmail.com
 jwt:

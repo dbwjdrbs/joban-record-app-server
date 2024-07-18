@@ -34,6 +34,7 @@ public class GameData extends Auditable {
     private String lobbyNation;
     private String isHuman;
     private String playerNumber;
+    private String mapName;
 
     // ResultData
     private int troop;

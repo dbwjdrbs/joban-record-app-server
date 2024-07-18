@@ -1,6 +1,7 @@
-package com.springboot.member.member;
+package com.springboot.member.controller;
 
 import com.springboot.dto.SingleResponseDto;
+import com.springboot.helper.email.EmailVerificationResult;
 import com.springboot.member.dto.MemberDto;
 import com.springboot.member.entity.Member;
 import com.springboot.member.mapper.MemberMapper;
@@ -10,9 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponents;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Positive;
 import java.net.URI;
 
@@ -37,7 +38,24 @@ public class MemberController {
         Member createdMember = memberService.createMember(member);
         URI location = UriCreator.createUri(MEMBER_DEFAULT_URL, createdMember.getMemberId());
 
+
+
         return ResponseEntity.created(location).build();
+    }
+
+    @PostMapping("/emails/verification-requests")
+    public ResponseEntity sendMessage(@RequestParam("email") @Valid @Email String email) {
+        memberService.sendCodeToEmail(email);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/emails/verifications")
+    public ResponseEntity verificationEmail(@RequestParam("email") @Valid @Email String email,
+                                            @RequestParam("code") String authCode) {
+        EmailVerificationResult response = memberService.verifiedCode(email, authCode);
+
+        return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.OK);
     }
 
     @PatchMapping("/{member-id}")
