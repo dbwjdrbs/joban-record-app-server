@@ -29,7 +29,6 @@ import java.util.Random;
 @Transactional
 @Service
 public class MemberService {
-    private static final String AUTH_CODE_PREFIX = "AuthCode";
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtAuthorityUtils authorityUtils;
@@ -46,16 +45,13 @@ public class MemberService {
         this.publisher = publisher;
     }
 
-    @Value("${mail.auth-code-expiration-millis}")
-    private long authCodeExpirationMillis;
-
     public Member createMember(Member member) {
         verifyExistsEmail(member.getEmail());
 
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encryptedPassword);
 
-        List<String> roles = authorityUtils.createRoles(member.getEmail());
+        List<String> roles = authorityUtils.createRoles(member.getEmail(), false);
         member.setRoles(roles);
 
         Member savedMember = memberRepository.save(member);
@@ -65,35 +61,19 @@ public class MemberService {
         return savedMember;
     }
 
-    public void sendCodeToEmail(String toEmail) {
-        verifyExistsEmail(toEmail);
-        String title = "조선의 반격 유저 전적 기록 시스템 인증 번호입니다.";
-        String authCode = createCode();
-        mailService.sendEmail(toEmail, title, authCode);
-        redisService.setValues(AUTH_CODE_PREFIX + toEmail, authCode, Duration.ofMillis(authCodeExpirationMillis));
-    }
-
-    private String createCode() {
-        int lenth = 6;
-        try {
-            Random random = SecureRandom.getInstanceStrong();
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < lenth; i++) {
-                builder.append(random.nextInt(10));
-            }
-            return builder.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new BusinessLogicException(ExceptionCode.NO_SUCH_ALGORITHM);
-        }
-    }
-
     public EmailVerificationResult verifiedCode(String email, String authCode) {
-        verifyExistsEmail(email);
-        String redisAuthCode = redisService.getValues(AUTH_CODE_PREFIX + email);
+        Member member = findVerifiedMember(email);
+
+        // 1. authCode checking
+        String redisAuthCode = redisService.getValues(email);
         boolean authResult = redisService.checkExistsValue(redisAuthCode) && redisAuthCode.equals(authCode);
 
-        return EmailVerificationResult.of(authResult);
+        // 2. Roles 세팅
+        if (authResult) {
+            member.setRoles(authorityUtils.createRoles(email, true));
+        }
 
+        return EmailVerificationResult.of(authResult);
     }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
@@ -130,8 +110,13 @@ public class MemberService {
         }
     }
 
-    private Member findVerifiedMember(long memberId) {
+    public Member findVerifiedMember(long memberId) {
         Optional<Member> optionalMember = memberRepository.findById(memberId);
+        return optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+    }
+
+    public Member findVerifiedMember(String email) {
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
         return optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
     }
 }

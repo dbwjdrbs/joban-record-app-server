@@ -17,8 +17,6 @@ import java.util.concurrent.Executors;
 
 @Component
 public class MemberEventListener {
-    private static final String AUTH_CODE_PREFIX = "AuthCode";
-    private static final String MEMBER_ID_PREFIX = "memberID";
     @Value("${mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
 
@@ -33,8 +31,7 @@ public class MemberEventListener {
                 memberEvent.getMailService().sendEmail(member.getEmail(),
                         "조선의 반격 유저 전적 기록 시스템 인증 번호",
                         authCode);
-                memberEvent.getRedisService().setValues(AUTH_CODE_PREFIX + member.getEmail(), authCode, Duration.ofMillis(authCodeExpirationMillis));
-                memberEvent.getRedisService().setValues(MEMBER_ID_PREFIX, String.valueOf(member.getMemberId()), Duration.ofMillis(authCodeExpirationMillis));
+                memberEvent.getRedisService().setValues(member.getEmail(), authCode, Duration.ofMillis(authCodeExpirationMillis));
             } catch (Exception e) {
                 memberEvent.getMemberRepository().delete(memberEvent.getMember());
                 throw new RuntimeException(e);

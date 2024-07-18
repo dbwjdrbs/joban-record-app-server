@@ -37,17 +37,7 @@ public class MemberController {
 
         Member createdMember = memberService.createMember(member);
         URI location = UriCreator.createUri(MEMBER_DEFAULT_URL, createdMember.getMemberId());
-
-
-
         return ResponseEntity.created(location).build();
-    }
-
-    @PostMapping("/emails/verification-requests")
-    public ResponseEntity sendMessage(@RequestParam("email") @Valid @Email String email) {
-        memberService.sendCodeToEmail(email);
-
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/emails/verifications")
