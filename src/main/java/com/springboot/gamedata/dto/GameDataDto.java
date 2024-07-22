@@ -1,6 +1,6 @@
 package com.springboot.gamedata.dto;
 
-import com.springboot.gamedata.entity.GameDataList;
+import com.springboot.gameresultdata.entity.GameResultData;
 import com.springboot.member.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,37 +11,18 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class GameDataDto {
-    private String gameId;
-    public String playTime;
-    public String gameVersion;
+    public static class Post {
+        private String playTime;
+        private String gameVersion;
 
-    @Positive
-    public long memberId;
+        // LobbyData
+        private String teamNumber;
+        private String lobbyNation;
+        private String inGameNation; // inGameData
+        private String isHuman;
+        private String playerNumber;
+        private String mapName; // 다른 영역의 메모리
 
-//    private List<GameDataListDto> gameDataLists;
-
-    // LobbyData
-    public String teamNumber;
-    public String lobbyNation;
-    public String isHuman;
-    public String playerNumber;
-
-    // ResultData
-    public int troop;
-    public int building;
-    public int troopLoss;
-    public int kill;
-    public int buildingLoss;
-    public int destroy;
-    public int tree;
-    public int grain;
-
-    public String isWin;
-    public String inGameNation;
-
-    public Member getMember() {
-        Member member = new Member();
-        member.setMemberId(memberId);
-        return member;
+        private String gameId; // 식별자
     }
 }

@@ -2,6 +2,8 @@ package com.springboot.member.entity;
 
 import com.springboot.audit.Auditable;
 import com.springboot.gamedata.entity.GameData;
+import com.springboot.gameresultdata.dto.GameResultDataDto;
+import com.springboot.gameresultdata.entity.GameResultData;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,7 +40,7 @@ public class Member extends Auditable {
     private int lose = 0;
 
     @OneToMany(mappedBy = "member")
-    private List<GameData> gameDatas = new ArrayList<>();
+    private List<GameResultData> gameResultDatas = new ArrayList<>();
 
     @Enumerated(value = EnumType.STRING)
     @Column(length = 20, nullable = false)
@@ -53,10 +55,10 @@ public class Member extends Auditable {
         this.name = name;
     }
 
-    public void setGameData(GameData gameData) {
-        gameDatas.add(gameData);
-        if (gameData.getMember() != this) {
-            gameData.setMember(this);
+    public void addGameResultData(GameResultData gameResultData) {
+        gameResultDatas.add(gameResultData);
+        if (gameResultData.getMember() != this) {
+            gameResultData.addMember(this);
         }
     }
 

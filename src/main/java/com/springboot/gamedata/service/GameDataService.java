@@ -13,23 +13,19 @@ import java.util.Optional;
 @Service
 public class GameDataService {
     private final GameDataRepository gameDataRepository;
-    private final MemberService memberService;
 
-    public GameDataService(GameDataRepository gameDataRepository, MemberService memberService) {
+    public GameDataService(GameDataRepository gameDataRepository) {
         this.gameDataRepository = gameDataRepository;
-        this.memberService = memberService;
     }
 
     public GameData createGameData(GameData gameData) {
-        Member member = memberService.findMember(gameData.getMember().getMemberId());
-
-        if (gameData.getIsWin().equals("승리")) {
-            member.addWin();
-            memberService.updateMember(member);
-        } else if (gameData.getIsWin().equals("패배")) {
-            member.addLose();
-            memberService.updateMember(member);
-        }
         return gameDataRepository.save(gameData);
+    }
+
+    public void verifyGame(String gameId) {
+        Optional<GameData> optionalGameData = gameDataRepository.findByGameId(gameId);
+        if (optionalGameData.isPresent()) {
+            throw new BusinessLogicException(ExceptionCode.DATA_NOT_FOUND);
+        }
     }
 }
