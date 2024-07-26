@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -15,17 +14,36 @@ public class GameResultData {
     // ResultData
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long gameResultDataId;
-    private String GameId;
-    private String isWin;  // inGameData
+    private long gameResultDataId;
+    @Column(nullable = false)
+    private int isWin;  // inGameData
+    @Column(nullable = false)
     private int troop;
+    @Column(nullable = false)
     private int building;
+    @Column(nullable = false)
     private int troopLoss;
+    @Column(nullable = false)
     private int kill;
+    @Column(nullable = false)
     private int buildingLoss;
+    @Column(nullable = false)
     private int destroy;
+    @Column(nullable = false)
     private int tree;
+    @Column(nullable = false)
     private int grain;
+    // LobbyData
+    @Column(nullable = false)
+    private int teamNumber;
+    @Column(nullable = false)
+    private int isHuman;
+    @Column(nullable = false)
+    private int playerNumber;
+    @Column(nullable = false)
+    private String lobbyNation;
+    @Column(nullable = false)
+    private String inGameNation; // inGameData
 
     @ManyToOne
     @JoinColumn(name = "MEMBER_ID")

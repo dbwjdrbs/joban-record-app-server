@@ -1,8 +1,6 @@
 package com.springboot.member.entity;
 
 import com.springboot.audit.Auditable;
-import com.springboot.gamedata.entity.GameData;
-import com.springboot.gameresultdata.dto.GameResultDataDto;
 import com.springboot.gameresultdata.entity.GameResultData;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +22,7 @@ public class Member extends Auditable {
     @Column(nullable = false, updatable = false, unique = true)
     private String email;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 100, nullable = false, unique = true)
     private String name;
 
     @Column(length = 100, nullable = false)

@@ -1,12 +1,14 @@
 package com.springboot.config;
 
 import com.springboot.auth.filter.JwtAuthenticationFilter;
+import com.springboot.auth.filter.JwtVerificationFilter;
 import com.springboot.auth.handler.MemberAuthenticationFailureHandler;
 import com.springboot.auth.handler.MemberAuthenticationSuccessHandler;
 import com.springboot.auth.handler.MemberAuthenticationEntryPoint;
 import com.springboot.auth.handler.MemberAccessDeniedHandler;
 
 import com.springboot.auth.jwt.JwtTokenizer;
+import com.springboot.auth.utils.JwtAuthorityUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,9 +30,11 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 public class SecurityConfiguration {
     private final JwtTokenizer jwtTokenizer;
+    private final JwtAuthorityUtils authorityUtils;
 
-    public SecurityConfiguration(JwtTokenizer jwtTokenizer) {
+    public SecurityConfiguration(JwtTokenizer jwtTokenizer, JwtAuthorityUtils authorityUtils) {
         this.jwtTokenizer = jwtTokenizer;
+        this.authorityUtils = authorityUtils;
     }
 
     @Bean
@@ -83,9 +87,12 @@ public class SecurityConfiguration {
             jwtAuthenticationFilter.setFilterProcessesUrl("/auth/login");
             jwtAuthenticationFilter.setAuthenticationSuccessHandler(new MemberAuthenticationSuccessHandler());
             jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler());
+
+            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils);
+
             builder
                     .addFilter(jwtAuthenticationFilter)
-                    .addFilterAfter(jwtAuthenticationFilter, JwtAuthenticationFilter.class);
+                    .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
 
         }
     }

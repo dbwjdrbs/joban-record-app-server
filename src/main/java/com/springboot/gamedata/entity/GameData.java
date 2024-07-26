@@ -1,13 +1,11 @@
 package com.springboot.gamedata.entity;
 
-import com.springboot.audit.Auditable;
 import com.springboot.gameresultdata.entity.GameResultData;
-import com.springboot.member.entity.Member;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,22 +16,18 @@ public class GameData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long gameDataId;
-//    private String gameId;
 
-    private String playTime;
+    @ElementCollection(fetch = FetchType.LAZY)
+    @Column(name = "PLAYERS", nullable = false)
+    private List<String> players = new ArrayList<>();
     private String gameVersion;
+    private String mapName; // 다른 메모리 영역
+    private int playTime;
 
-    // LobbyData
-
-    private String teamNumber;
-    private String lobbyNation;
-    private String inGameNation; // inGameData
-    private String isHuman;
-    private String playerNumber;
-    private String mapName;
     @OneToMany(mappedBy = "gameData", cascade = CascadeType.PERSIST)
     private List<GameResultData> gameResultDatas = new ArrayList<>();
-    private LocalDate createdAt = LocalDate.now();
+
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     public void addGameResultData(GameResultData gameResultData) {
         this.gameResultDatas.add(gameResultData);

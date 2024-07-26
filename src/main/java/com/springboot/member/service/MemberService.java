@@ -4,12 +4,11 @@ import com.springboot.auth.utils.JwtAuthorityUtils;
 import com.springboot.exception.BusinessLogicException;
 import com.springboot.exception.ExceptionCode;
 import com.springboot.helper.email.EmailVerificationResult;
-import com.springboot.helper.email.event.MemberEvent;
+import com.springboot.helper.email.member_event.MemberEvent;
 import com.springboot.helper.email.service.MailService;
 import com.springboot.helper.redis.service.RedisService;
 import com.springboot.member.entity.Member;
 import com.springboot.member.repository.MemberRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,14 +16,8 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.ProxySelector;
-import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 @Transactional
 @Service
@@ -71,6 +64,7 @@ public class MemberService {
         // 2. Roles 세팅
         if (authResult) {
             member.setRoles(authorityUtils.createRoles(email, true));
+            redisService.deleteValues(email);
         }
 
         return EmailVerificationResult.of(authResult);

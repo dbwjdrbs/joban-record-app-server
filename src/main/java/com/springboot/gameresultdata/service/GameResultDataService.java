@@ -1,12 +1,8 @@
 package com.springboot.gameresultdata.service;
 
-import com.springboot.exception.BusinessLogicException;
-import com.springboot.exception.ExceptionCode;
-import com.springboot.gamedata.entity.GameData;
 import com.springboot.gamedata.service.GameDataService;
-import com.springboot.gameresultdata.dto.GameResultDataDto;
 import com.springboot.gameresultdata.entity.GameResultData;
-import com.springboot.gameresultdata.repostitory.GameResultDataRepository;
+import com.springboot.gameresultdata.repository.GameResultDataRepository;
 import com.springboot.member.entity.Member;
 import com.springboot.member.service.MemberService;
 import org.springframework.stereotype.Service;
@@ -30,9 +26,10 @@ public class GameResultDataService {
     public GameResultData createGameResultData(GameResultData requestBody) {
         // 제약
         Member member = memberService.findVerifiedMember(requestBody.getMember().getMemberId());
-        gameDataService.verifyGame(requestBody.getGameId());
+        gameDataService.verifyGameData(requestBody.getGameData().getGameDataId());
+        
         // 승률 올리기
-        setRecord(member, requestBody.getIsWin());
+        setRecord(member, String.valueOf(requestBody.getIsWin()));
 
         // 저장
         return gameResultDataRepository.save(requestBody);
