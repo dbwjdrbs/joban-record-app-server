@@ -1,7 +1,6 @@
-package com.springboot.helper.email.gamemode_event;
+package com.springboot.helper.event.gamemode_event;
 
 import com.springboot.gamedata.entity.GameData;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 

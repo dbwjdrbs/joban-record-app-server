@@ -1,4 +1,4 @@
-package com.springboot.helper.email.member_event;
+package com.springboot.helper.event.member_event;
 
 import com.springboot.member.entity.Member;
 import com.springboot.member.service.MemberService;

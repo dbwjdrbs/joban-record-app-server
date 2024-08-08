@@ -31,8 +31,7 @@ public class GameResultDataController {
 
     @PostMapping
     public ResponseEntity postGameResultData(@Valid @RequestBody GameResultDataDto requestBody, Authentication authentication) {
-        GameResultData gameResultData = mapper.gameResultDataPostToGameResultData(requestBody);
-        GameResultData createdGameResultData = gameResultDataService.createGameResultData(gameResultData);
+        GameResultData createdGameResultData = gameResultDataService.createGameResultData(mapper.gameResultDataPostToGameResultData(requestBody), authentication);
         URI location = UriCreator.createUri(GAME_RESULT_DATA_URL, createdGameResultData.getGameResultDataId());
         return ResponseEntity.created(location).build();
     }

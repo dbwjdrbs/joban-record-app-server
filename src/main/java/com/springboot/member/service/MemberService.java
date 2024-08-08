@@ -4,7 +4,7 @@ import com.springboot.auth.utils.JwtAuthorityUtils;
 import com.springboot.exception.BusinessLogicException;
 import com.springboot.exception.ExceptionCode;
 import com.springboot.helper.email.EmailVerificationResult;
-import com.springboot.helper.email.member_event.MemberEvent;
+import com.springboot.helper.event.member_event.MemberEvent;
 import com.springboot.helper.email.service.MailService;
 import com.springboot.helper.redis.service.RedisService;
 import com.springboot.member.entity.Member;

@@ -4,7 +4,7 @@ import com.springboot.exception.BusinessLogicException;
 import com.springboot.exception.ExceptionCode;
 import com.springboot.gamedata.entity.GameData;
 import com.springboot.gamedata.repository.GameDataRepository;
-import com.springboot.helper.email.gamemode_event.GameModeEvent;
+import com.springboot.helper.event.gamemode_event.GameModeEvent;
 import com.springboot.helper.redis.service.RedisService;
 import com.springboot.member.entity.Member;
 import com.springboot.member.service.MemberService;
@@ -12,9 +12,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 @Service

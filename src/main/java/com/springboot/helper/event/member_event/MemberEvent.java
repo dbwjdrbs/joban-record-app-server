@@ -1,4 +1,4 @@
-package com.springboot.helper.email.member_event;
+package com.springboot.helper.event.member_event;
 
 import com.springboot.helper.email.service.MailService;
 import com.springboot.helper.redis.service.RedisService;

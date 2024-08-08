@@ -1,4 +1,4 @@
-package com.springboot.helper.email.gamemode_event;
+package com.springboot.helper.event.gamemode_event;
 
 import com.springboot.gamedata.entity.GameData;
 import com.springboot.gamedata.repository.GameDataRepository;
